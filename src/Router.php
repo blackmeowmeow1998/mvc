@@ -8,7 +8,8 @@ class Router
     {
         $url = trim($url);
 
-        if ($url == "/mvc/src/")
+        if ($url == "/mvc/src/" 
+            || $url == "/mvc/")
         {
             $request->controller = "tasks";
             $request->action = "index";

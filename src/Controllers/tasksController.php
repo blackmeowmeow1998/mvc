@@ -61,7 +61,6 @@ class tasksController extends Controller
 
     function delete($id)
     {   
-
         require_once "../../bootstrap.php";
         $this->taskModel = $entityManager->find(get_class($this->taskModel), $id);
         $entityManager->remove($this->taskModel);
