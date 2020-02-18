@@ -17,6 +17,7 @@ $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/src"), $i
 
 // database configuration parameters
 $conn = array(
+	'host'	   => '127.0.1.1:3306',
     'driver'   => 'pdo_mysql',
     'user'     => 'root',
     'password' => 'BevolL99999',
