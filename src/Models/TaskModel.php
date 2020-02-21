@@ -1,12 +1,13 @@
 <?php
 namespace Black\Models;
+use Black\Models\CoreModel;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="tasks")
  */
-Class TaskModel 
+Class TaskModel
 {
 
     /** 

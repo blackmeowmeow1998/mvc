@@ -1,22 +1,23 @@
 <?php
 namespace Black\Controllers;
 use Black\Core\Controller;
-use Black\Core\Core;
 use Black\Models\TaskModel;
+use Black\Models\TaskModelResponsity;
 
 class TasksController extends Controller
 {   
     protected $taskModel;
+    protected $taskModelResponsity;
 
     function __construct() {
         $this->taskModel = new TaskModel;
+        $this->taskModelResponsity = new TaskModelResponsity;
     }
 
     function index()
     {   
-        $taskRepository = Core::EntityManager()->getRepository(get_class($this->taskModel));
+        $this->taskModel->listTask = $this->taskModelResponsity->listTask();
 
-        $this->taskModel->listTask = $taskRepository->findAll();
         $this->render("index");
     }
 
@@ -31,11 +32,10 @@ class TasksController extends Controller
             $create = $now['year'].'-'.$now['mon'].'-'.$now['mday'].'-'.$now['hours'].'-'.$now['minutes'].'-'.$now['seconds'];
             $this->taskModel->setCreated_at($create);
             $this->taskModel->setUpdated_at("#");
-            Core::EntityManager()->persist($this->taskModel);
-            Core::EntityManager()->flush();
-        
-            header("Location: " . WEBROOT . "tasks/index");
-            
+
+            //Do Creat
+            $this->taskModelResponsity->create($this->taskModel);
+            header("Location: " . WEBROOT . "tasks/index");        
         }
 
         $this->render("create");
@@ -43,8 +43,7 @@ class TasksController extends Controller
 
     function edit($id)
     {
- 
-        $this->taskModel = Core::EntityManager()->find(get_class($this->taskModel), $id);
+        $this->taskModel = $this->taskModelResponsity->getOneTask($id);
         if (isset($_POST["title"]))
         {
             $this->taskModel->setTitle($_POST['title']);
@@ -52,7 +51,9 @@ class TasksController extends Controller
             $now = getdate();
             $update = $now['year'].'-'.$now['mon'].'-'.$now['mday'].'-'.$now['hours'].'-'.$now['minutes'].'-'.$now['seconds'];
             $this->taskModel->setUpdated_at($update);
-            Core::EntityManager()->flush();
+
+            //Do Edit
+            $this->taskModelResponsity->edit();
             header("Location: " . WEBROOT . "tasks/index");           
         }
         $this->render("edit");
@@ -60,9 +61,9 @@ class TasksController extends Controller
 
     function delete($id)
     {   
-        $this->taskModel = Core::EntityManager()->find(get_class($this->taskModel), $id);
-        Core::EntityManager()->remove($this->taskModel);
-        Core::EntityManager()->flush();
+        //Do Delete
+        $this->taskModelResponsity->delete($this->taskModelResponsity->getOneTask($id));
+
         header("Location: " . WEBROOT . "tasks/index");
     }
 }
