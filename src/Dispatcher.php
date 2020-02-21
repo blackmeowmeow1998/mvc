@@ -5,7 +5,6 @@ use Black\Router;
 
 class Dispatcher
 {
-
     private $request;
 
     public function dispatch()
@@ -21,7 +20,7 @@ class Dispatcher
 
     public function loadController()
     {
-        $name = $this->request->controller . "Controller";
+        $name = ucfirst($this->request->controller) . "Controller";
         $file ='Black\Controllers\\' . $name;
         $controller = new $file();
         return $controller;

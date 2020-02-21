@@ -1,10 +1,10 @@
 <?php
 namespace Black\Controllers;
 use Black\Core\Controller;
+use Black\Core\Core;
 use Black\Models\TaskModel;
 
-
-class tasksController extends Controller
+class TasksController extends Controller
 {   
     protected $taskModel;
 
@@ -14,15 +14,14 @@ class tasksController extends Controller
 
     function index()
     {   
-        require_once "../../bootstrap.php";
-        $taskRepository = $entityManager->getRepository(get_class($this->taskModel));
+        $taskRepository = Core::EntityManager()->getRepository(get_class($this->taskModel));
+
         $this->taskModel->listTask = $taskRepository->findAll();
         $this->render("index");
     }
 
     function create()
     {
-        require_once "../../bootstrap.php";
         if (isset($_POST["title"]))
         {
             $this->taskModel->setTitle($_POST['title']);
@@ -32,8 +31,8 @@ class tasksController extends Controller
             $create = $now['year'].'-'.$now['mon'].'-'.$now['mday'].'-'.$now['hours'].'-'.$now['minutes'].'-'.$now['seconds'];
             $this->taskModel->setCreated_at($create);
             $this->taskModel->setUpdated_at("#");
-            $entityManager->persist($this->taskModel);
-            $entityManager->flush();
+            Core::EntityManager()->persist($this->taskModel);
+            Core::EntityManager()->flush();
         
             header("Location: " . WEBROOT . "tasks/index");
             
@@ -44,8 +43,8 @@ class tasksController extends Controller
 
     function edit($id)
     {
-        require_once "../../bootstrap.php";
-        $this->taskModel = $entityManager->find(get_class($this->taskModel), $id);
+ 
+        $this->taskModel = Core::EntityManager()->find(get_class($this->taskModel), $id);
         if (isset($_POST["title"]))
         {
             $this->taskModel->setTitle($_POST['title']);
@@ -53,7 +52,7 @@ class tasksController extends Controller
             $now = getdate();
             $update = $now['year'].'-'.$now['mon'].'-'.$now['mday'].'-'.$now['hours'].'-'.$now['minutes'].'-'.$now['seconds'];
             $this->taskModel->setUpdated_at($update);
-            $entityManager->flush();
+            Core::EntityManager()->flush();
             header("Location: " . WEBROOT . "tasks/index");           
         }
         $this->render("edit");
@@ -61,10 +60,9 @@ class tasksController extends Controller
 
     function delete($id)
     {   
-        require_once "../../bootstrap.php";
-        $this->taskModel = $entityManager->find(get_class($this->taskModel), $id);
-        $entityManager->remove($this->taskModel);
-        $entityManager->flush();
+        $this->taskModel = Core::EntityManager()->find(get_class($this->taskModel), $id);
+        Core::EntityManager()->remove($this->taskModel);
+        Core::EntityManager()->flush();
         header("Location: " . WEBROOT . "tasks/index");
     }
 }
